@@ -5,7 +5,7 @@
   <artifactId>log-enrichment</artifactId>
   <packaging>jar</packaging>
   <version>1.0</version>
-  <name>log-enrichment Maven Webapp</name>
+  <name>log enrichment application</name>
   <url>http://maven.apache.org</url>
 
   <repositories>
@@ -58,5 +58,15 @@
   </dependencies>
   <build>
     <finalName>log-enrichment</finalName>
+    <plugins>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+        </configuration>
+      </plugin>
+    </plugins>
   </build>
 </project>

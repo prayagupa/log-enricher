@@ -3,6 +3,13 @@ log-enricher
 
 gets the xml body in inbound event and translates to json, don't laugh yet there more to call it enrichment
 
+build artifact
+-----------
+
+```
+mvn clean compile assembly:single
+```
+
 uses
 ----------
 

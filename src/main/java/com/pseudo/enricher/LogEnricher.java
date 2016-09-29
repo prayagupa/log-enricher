@@ -1,7 +1,10 @@
-import api.Enricher;
+package com.pseudo.enricher;
+
+import com.pseudo.enricher.api.Enricher;
 import org.apache.flume.Context;
 import org.apache.flume.Event;
 import org.apache.flume.interceptor.Interceptor;
+import org.apache.log4j.Logger;
 import org.json.JSONObject;
 import org.json.XML;
 
@@ -15,16 +18,25 @@ import java.util.List;
 
 public class LogEnricher extends Enricher {
 
+    Logger logger = Logger.getLogger(LogEnricher.class);
+
     public void initialize() {
 
     }
 
     public Event intercept(Event event) {
         String eventBody = new String(event.getBody());
-        JSONObject jsonObject = new JSONObject(eventBody);
-        JSONObject messageXml = XML.toJSONObject(jsonObject.getString("messageXml"));
-        jsonObject.put("messageXml", messageXml);
-        event.setBody(jsonObject.toString().getBytes());
+        logger.info("received an event " + eventBody);
+        try {
+            JSONObject jsonObject = new JSONObject(eventBody);
+            String xml = jsonObject.getString("messageXml").replaceAll("[\\t\\n\\r]"," ");
+            JSONObject messageDataJson = XML.toJSONObject(xml);
+            jsonObject.put("messageXml", messageDataJson);
+            event.setBody(jsonObject.toString().getBytes());
+            logger.info("enriched event " + eventBody);
+        } catch(Exception e) {
+            logger.info("exception parsing " + e.getMessage());
+        }
         return event;
     }
 

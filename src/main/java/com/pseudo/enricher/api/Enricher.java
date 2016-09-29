@@ -1,4 +1,4 @@
-package api;
+package com.pseudo.enricher.api;
 
 import org.apache.flume.Context;
 import org.apache.flume.Event;
