@@ -47,8 +47,7 @@ class LogEnricherSpec extends FunSuite {
         {
         "timeMillis" : "1234567890",
         "eventType" : "TransferItems",
-        "messageXml" : "<TransferId>123456</TransferId>
-                        <TransferDate>"Sunday"</TransferDate>"
+        "messageXml" : "<TransferId>123456</TransferId><TransferDate>Sunday</TransferDate>"
         }
       """.stripMargin
 
