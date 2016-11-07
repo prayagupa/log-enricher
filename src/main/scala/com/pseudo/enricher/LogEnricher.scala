@@ -27,7 +27,8 @@ class LogEnricher extends Enricher {
     val jsonObject = new JSONObject(eventBody)
     val requestEvent = jsonObject.getString("message")
     val metrics : List[(String, String)] =
-      requestEvent.split(",").map(kv => (kv.split("=")(0), kv.split("=")(1))).toList
+      requestEvent.split(",").map(kv => (kv.split("=(?!\")")(0), kv.split("=(?!\")")(1))).toList
+
 
     metrics.map(kv => jsonObject.put(kv._1, getJson(kv._2)))
     jsonObject.remove("message")
@@ -37,7 +38,7 @@ class LogEnricher extends Enricher {
   }
 
   private def getJson(value: String) : Object = {
-    if(value.startsWith("<")) {
+    if(value.replaceAll("\r\n", "").replaceAll("\n", "").startsWith("<")) {
       val messageDataJson = XML.toJSONObject(value)
       messageDataJson
     } else {
