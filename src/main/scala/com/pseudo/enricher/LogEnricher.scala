@@ -9,9 +9,9 @@ import org.json.{JSONObject, XML}
 import scala.collection.JavaConverters._
 
 /**
- * Created by prayagupd 
- * on 10/7/16.
- */
+  * Created by prayagupd
+  * on 10/7/16.
+  */
 
 class LogEnricher extends Enricher {
 
@@ -26,19 +26,27 @@ class LogEnricher extends Enricher {
     logger.info("received an event " + eventBody)
     val jsonObject = new JSONObject(eventBody)
     val requestEvent = jsonObject.getString("message")
-    val metrics : List[(String, String)] =
+    val metrics: List[(String, String)] =
       requestEvent.split(",").map(kv => (kv.split("=(?!\")")(0), kv.split("=(?!\")")(1))).toList
 
 
-    metrics.map(kv => jsonObject.put(kv._1, getJson(kv._2)))
+    metrics.map(kv => jsonObject.put(getKey(kv._1), getJson(kv._2)))
     jsonObject.remove("message")
     event.setBody(jsonObject.toString.getBytes)
     logger.info("enriched event " + eventBody)
     event
   }
 
-  private def getJson(value: String) : Object = {
-    if(value.replaceAll("\r\n", "").replaceAll("\n", "").startsWith("<")) {
+  val map = Map("eventId" -> "traceContext",
+    "requestType" -> "schemaType",
+    "environment" -> "environmentName",
+    "hostPort" -> "requestPort",
+    "hostName" -> "requestHostName")
+
+  private def getKey(key: String): String = map.getOrElse(key, key)
+
+  private def getJson(value: String): Object = {
+    if (value.replaceAll("\r\n", "").replaceAll("\n", "").startsWith("<")) {
       val messageDataJson = XML.toJSONObject(value)
       messageDataJson
     } else {
